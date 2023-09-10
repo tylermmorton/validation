@@ -122,6 +122,8 @@ var (
 	ErrSSN = validation.NewError("validation_is_ssn", "must be a valid social security number")
 	// ErrSemver is the error that returns in case of an invalid semver.
 	ErrSemver = validation.NewError("validation_is_semver", "must be a valid semantic version")
+	// ErrZipcode is the error that returns in case of an invalid zipcode.
+	ErrZipcode = validation.NewError("validation_is_zipcode", "must be a valid zipcode")
 )
 
 var (
@@ -235,6 +237,8 @@ var (
 	SSN = validation.NewStringRuleWithError(govalidator.IsSSN, ErrSSN)
 	// Semver validates if a string is a valid semantic version
 	Semver = validation.NewStringRuleWithError(govalidator.IsSemver, ErrSemver)
+	// Zipcode validates if a string is a valid zipcode
+	ZipCode = validation.NewStringRuleWithError(isZipcode, ErrZipcode)
 )
 
 var (
@@ -247,6 +251,8 @@ var (
 	// Slightly modified: Removed 255 max length validation since Go regex does not
 	// support lookarounds. More info: https://stackoverflow.com/a/38935027
 	reDomain = regexp.MustCompile(`^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-z0-9])?\.)+(?:[a-zA-Z]{1,63}| xn--[a-z0-9]{1,59})$`)
+	// Zipcode regex
+	reZipcode = regexp.MustCompile(`^\d{5}(?:[-\s]\d{4})?$`)
 )
 
 func isISBN(value string) bool {
@@ -280,4 +286,8 @@ func isUTFNumeric(value string) bool {
 		}
 	}
 	return true
+}
+
+func isZipcode(value string) bool {
+	return reZipcode.MatchString(value)
 }
